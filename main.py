@@ -15,40 +15,21 @@ data = csv.values
 
 #Separating attributes and classifiers
 attributes     = data[:,:5]
-numberComments = data[:, 5]
-likes          = data[:, 6]
-shared         = data[:, 7]
+classifiers    = data[:,5:]
+
 
 #Adjustment of non-binary classification attributes
 ct         = ColumnTransformer([('binario', OneHotEncoder(), [0, 1])], remainder='passthrough')
 attributes = ct.fit_transform(attributes).toarray()
 
-#Model comments
-modelComments = Sequential()
-modelComments.add(Dense(units=10, activation='relu'))
-modelComments.add(Dense(units=1, activation='linear'))
-modelComments.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
+#Create Model
+model = Sequential()
+model.add(Dense(units=10, activation='relu'))
+model.add(Dense(units=3, activation='linear'))
+model.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
 
 #Training Model Comments
-modelComments.fit(attributes, numberComments, batch_size=30, epochs=1000)
-
-#Model likes
-modelLikes = Sequential()
-modelLikes.add(Dense(units=10, activation='relu'))
-modelLikes.add(Dense(units=1, activation='linear'))
-modelLikes.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
-
-#Training Model Likes
-modelLikes.fit(attributes, likes, batch_size=30, epochs=1000)
-
-#Model Shared
-modelShared = Sequential()
-modelShared.add(Dense(units=10, activation='relu'))
-modelShared.add(Dense(units=1, activation='linear'))
-modelShared.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
-
-#Training Model Shared
-modelShared.fit(attributes, shared, batch_size=30, epochs=1000)
+model.fit(attributes, classifiers, batch_size=30, epochs=1000)
 
 #Inputs
 postType = int(input('Informe o número de tipo da postagem: Foto[0] | Link[1] | Status[2] | Video[3]: '))
@@ -58,31 +39,14 @@ hour     = int(input('Hora: '))
 pay      = int(input('Pago: SIM[1] | NÃO[0]: '))
 
 #Predicting comments
-valuesComments = np.array([
+values = np.array([
     [postType, month, day, hour, pay]
 ])
-valuesComments = ct.transform(valuesComments).toarray()
-
-averageComments = modelComments.predict(valuesComments)
-
-#Predicting Likes
-valuesLikes = np.array([
-    [postType, month, day, hour, pay]
-])
-valuesLikes = ct.transform(valuesLikes).toarray()
-
-averageLikes = modelLikes.predict(valuesLikes)
-
-#Predicting Shared
-valuesShared = np.array([
-    [postType, month, day, hour, pay]
-])
-valuesShared = ct.transform(valuesShared).toarray()
-
-averageShared = modelShared.predict(valuesShared)
+values   = ct.transform(values).toarray()
+averages = model.predict(values)
 
 #Showing Averages
-print('Média Comentários: ', int(averageComments[0]))
-print('Média Likes: ', int(averageLikes[0]))
-print('Média Compartilhamentos: ', int(averageShared[0]))
+print('Média Comentários: ', int(averages[0][0]))
+print('Média Likes: ', int(averages[0][1]))
+print('Média Compartilhamentos: ', int(averages[0][2]))
 

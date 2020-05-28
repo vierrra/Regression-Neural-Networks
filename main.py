@@ -25,24 +25,29 @@ attributes = ct.fit_transform(attributes).toarray()
 
 #Model comments
 modelComments = Sequential()
-modelComments.add(Dense(units=4, activation='relu'))
+modelComments.add(Dense(units=10, activation='relu'))
 modelComments.add(Dense(units=1, activation='linear'))
 modelComments.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
 
+#Training Model Comments
+modelComments.fit(attributes, numberComments, batch_size=30, epochs=1000)
+
 #Model likes
 modelLikes = Sequential()
-modelLikes.add(Dense(units=4, activation='relu'))
+modelLikes.add(Dense(units=10, activation='relu'))
 modelLikes.add(Dense(units=1, activation='linear'))
 modelLikes.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
 
+#Training Model Likes
+modelLikes.fit(attributes, likes, batch_size=30, epochs=1000)
+
 #Model Shared
 modelShared = Sequential()
-modelShared.add(Dense(units=4, activation='relu'))
+modelShared.add(Dense(units=10, activation='relu'))
 modelShared.add(Dense(units=1, activation='linear'))
 modelShared.compile(optimizer = 'adam', loss = 'mean_absolute_error', metrics = ['mean_absolute_error'])
 
-modelComments.fit(attributes, numberComments, batch_size=30, epochs=1000)
-modelLikes.fit(attributes, likes, batch_size=30, epochs=1000)
+#Training Model Shared
 modelShared.fit(attributes, shared, batch_size=30, epochs=1000)
 
 #Inputs
